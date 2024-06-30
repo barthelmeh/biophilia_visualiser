@@ -5,16 +5,16 @@ import "../global.css";
 
 export default function RootLayout() {
   return (
-    <SafeAreaView>
-      <View className="flex bg-background w-full h-full py-10 px-8">
+    <SafeAreaView style={styles.safeArea}>
+      <View className="flex bg-background items-center justify-center w-full h-full py-10 px-8">
         <Slot />
       </View>
     </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
-  layoutStyles: {
+  safeArea: {
     flex: 1,
-    alignItems: "center"
+    backgroundColor: "#E9FFF3"
   }
 });
