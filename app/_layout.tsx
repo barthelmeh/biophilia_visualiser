@@ -1,6 +1,4 @@
-import { Slot, SplashScreen } from "expo-router";
-import { StyleSheet, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Stack, SplashScreen } from "expo-router";
 import { useEffect } from "react";
 import { useFonts } from "expo-font";
 import "../global.css";
@@ -37,18 +35,12 @@ const RootLayout = () => {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View className="flex bg-background items-center justify-center w-full h-full py-10 px-8">
-        <Slot />
-      </View>
-    </SafeAreaView>
+    <Stack>
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="terms_and_conditions" options={{ headerShown: false }} />
+      <Stack.Screen name="visualiser" options={{ headerShown: false }} />
+    </Stack>
   );
 }
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#E9FFF3"
-  }
-});
 
 export default RootLayout;
