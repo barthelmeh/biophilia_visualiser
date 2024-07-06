@@ -7,8 +7,8 @@ module.exports = {
 
       fontFamily: {
         title: ['Poppins', 'sans-serif'],
-        body: ['NunitoSans', 'sans-serif'],
-        accent: ['DancingScript', 'cursive']
+        body: ['Nunito Sans', 'sans-serif'],
+        accent: ['Dancing Script', 'cursive']
       },
 
       colors: {
