@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, SafeAreaView } from 'react-native';
 
 import useGenerator from '@/hooks/useGenerator';
 
@@ -13,7 +12,7 @@ const Visualiser = () => {
     const HRVData = useGenerator(hrv_data);
 
     return (
-        <SafeAreaView className="bg-primary h-full">
+        <SafeAreaView className="bg-background h-full">
 
             <View className="w-full h-full flex flex-col gap-2 justify-center items-center">
                 <Text className='font-body text-text font-bold text-xl'>

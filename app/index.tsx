@@ -1,26 +1,23 @@
-import { Text, View, Pressable, Image } from "react-native";
+import { Text, View, Pressable, Image, SafeAreaView } from "react-native";
 import { Link } from "expo-router";
 import GetStartedFooter from "@/components/GetStartedFooter";
 
 import { images } from "../constants";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
 
   return (
-    <SafeAreaView className="bg-primary h-full">
+    <SafeAreaView className="bg-background h-full relative">
       <View className="w-full h-full relative px-4">
 
         <View className="h-full w-full flex justify-center items-center pb-2">
 
           {/* Log in button for admins */}
 
-          <View className="absolute top-0 right-0">
-            <Link href="" asChild>
+          <View className="absolute top-0 right-0 p-2">
+            <Link href="/login" asChild>
               <Pressable>
-                <Text className="font-bold font-body text-secondary_text">
-                  Log in
-                </Text>
+                <Text className="font-bold font-body text-secondary_text"> Log in </Text>
               </Pressable>
             </Link>
           </View>
@@ -28,9 +25,9 @@ export default function Index() {
           {/* Background Image */}
           <Image 
                 source={images.scion_logo}
-                className="absolute w-[175%] h-[200%] opacity-25"
+                className="absolute w-[175%] h-[200%] opacity-25 -z-20"
                 resizeMode="contain"
-            />
+          />
           
           <View className="flex justify-center items-center w-full">
             <Text className="font-bold text-6xl font-text text-text font-title leading-normal">

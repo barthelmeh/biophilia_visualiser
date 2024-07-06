@@ -1,10 +1,10 @@
 import { View, Text, Pressable } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native";
 import { Link } from "expo-router";
 
 const TermsConditions = () => {
     return (
-        <SafeAreaView className="bg-primary h-full">
+        <SafeAreaView className="bg-background h-full relative">
 
             <View className="w-full h-full flex justify-center items-center">
                 
