@@ -66,7 +66,7 @@ const Login = () => {
 
                 <View className="flex justify-center items-center my-16">
                     <Text className="font-bold font-title text-3xl text-text">Administrator Login</Text>
-                    <Text className="font-accent text-lg text-secondary_text">For easy access to participant data and settings</Text>
+                    <Text className="font-body text-secondary_text">For easy access to participant data and settings</Text>
                 </View>
 
                 <View className="my-8 flex justify-center">
