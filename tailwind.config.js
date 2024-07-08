@@ -14,8 +14,11 @@ module.exports = {
       colors: {
         background: "#E9FFF3",
         button: "#A8D5BA",
+        secondary_button: "#88C093",
         text: "#374B4A",
-        secondary_text: "#5B7B6F"
+        secondary_text: "#5B7B6F",
+        accent: "#6FA282",
+        error: "#E57373"
       }
 
     },
