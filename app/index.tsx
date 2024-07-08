@@ -1,6 +1,8 @@
 import { Text, View, Pressable, Image, SafeAreaView } from "react-native";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
+
 import GetStartedFooter from "@/components/GetStartedFooter";
+import CustomButton from "@/components/CustomButton";
 
 import { images } from "../constants";
 
@@ -46,9 +48,16 @@ export default function Index() {
           
           <View className="flex justify-center items-center my-16">
             <Link href="/terms_and_conditions" asChild>
-              <Pressable className="rounded-full bg-button py-1 px-4 shadow-sm">
+              <CustomButton 
+                title="Get Started →"
+                isLoading={false}
+                handlePress={() => router.push('/terms_and_conditions')}
+                key={"get_started"}
+              />
+
+              {/* <Pressable className="rounded-full bg-button py-1 px-4 shadow-sm">
                 <Text className="font-bold font-body text-secondary_text">Get Started →</Text>
-              </Pressable>
+              </Pressable> */}
             </Link>
             
           </View>
