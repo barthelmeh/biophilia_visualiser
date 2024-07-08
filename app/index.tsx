@@ -1,4 +1,4 @@
-import { Text, View, Pressable, Image, SafeAreaView } from "react-native";
+import { Text, View, Pressable, Image, SafeAreaView, StatusBar } from "react-native";
 import { Link, router } from "expo-router";
 
 import GetStartedFooter from "@/components/GetStartedFooter";
@@ -10,6 +10,9 @@ export default function Index() {
 
   return (
     <SafeAreaView className="bg-background h-full relative">
+      <StatusBar
+        barStyle={"dark-content"}
+      />
       <View className="w-full h-full relative px-4">
 
         <View className="h-full w-full flex justify-center items-center pb-2">
@@ -51,7 +54,7 @@ export default function Index() {
               <CustomButton 
                 title="Get Started →"
                 isLoading={false}
-                handlePress={() => router.push('/terms_and_conditions')}
+                handlePress={() => router.push('/details')}
                 key={"get_started"}
               />
 
