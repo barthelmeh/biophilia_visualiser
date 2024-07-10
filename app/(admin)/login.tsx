@@ -71,19 +71,19 @@ const Login = () => {
 
                 <View className="my-8 flex justify-center">
                     <Text className="text-text font-body text-lg py-1">Username</Text>
-                    <FormField 
+                    <FormField<string>
                         value={form.username}
                         placeholder={'Enter your username'}
-                        handleChangeText={(e) => setForm({...form, username: e})}
+                        handleChangeValue={(e) => setForm({...form, username: e})}
                         isPassword={false}
                     />
                     <Text className='text-error -mt-6 text-sm'>{usernameError}</Text>
 
                     <Text className="text-text font-body text-lg py-1">Password</Text>
-                    <FormField 
+                    <FormField<string> 
                         value={form.password}
                         placeholder={'Enter your password'}
-                        handleChangeText={(e) => setForm({...form, password: e})}
+                        handleChangeValue={(e) => setForm({...form, password: e})}
                         isPassword={true}
                     />
                     <Text className='text-error -mt-6 text-sm'>{passwordError}</Text>
