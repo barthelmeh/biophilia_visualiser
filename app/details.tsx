@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import CustomButton from '@/components/CustomButton';
 import FormField from '@/components/FormField';
-import enumToOptions from '@/components/enumToOptions';
+import enumToOptions from '@/utility/enumToOptions';
 
 import { icons, activityLevel } from '../constants';
 
