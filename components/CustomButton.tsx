@@ -4,6 +4,7 @@ import { forwardRef } from 'react';
 interface CustomButtonProps {
     title: string,
     isLoading: boolean,
+    disabled?: boolean,
     containerStyles?: string,
     textStyles?: string,
     handlePress?: (event: GestureResponderEvent) => void,
@@ -13,9 +14,9 @@ const CustomButton = forwardRef<View, CustomButtonProps>(( props: CustomButtonPr
 
     return (
         <Pressable
-            className={`flex justify-center items-center shadow-sm py-1 px-4 rounded-full ${props.containerStyles} ${props.isLoading ? "bg-button opacity-25 cursor-not-allowed" : "bg-button"}`}
+            className={`flex justify-center items-center shadow-sm py-1 px-4 rounded-full ${props.containerStyles} ${(props.isLoading || props.disabled) ? "bg-button opacity-25 cursor-not-allowed" : "bg-button"}`}
             onPress={props.handlePress}
-            disabled={props.isLoading}
+            disabled={props.isLoading || props.disabled}
             ref={ref}
         >
             <Text className={`font-body text-secondary_text text-lg ${props.textStyles}`}>
