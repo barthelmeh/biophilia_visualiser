@@ -35,10 +35,10 @@ export default function Index() {
           />
           
           <View className="flex justify-center items-center w-full">
-            <Text className="font-bold text-6xl font-text text-text font-title leading-normal">
-              Stress Level
+            <Text className="font-bold text-7xl font-text text-text font-title leading-normal">
+              Biophilia
             </Text>
-            <Text className="font-bold text-6xl font-text text-text font-title leading-normal -mt-8">
+            <Text className="font-bold text-4xl font-text text-text font-title leading-normal -mt-4 mb-4">
               Visualiser
             </Text>
           </View>
