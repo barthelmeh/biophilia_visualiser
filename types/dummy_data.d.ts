@@ -1,4 +1,4 @@
 type HRV = {
-    HRV: number,
-    Time: string
+    time: string
+    hrv: number,
 }

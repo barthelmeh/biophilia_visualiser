@@ -18,7 +18,11 @@ module.exports = {
         text: "#374B4A",
         secondary_text: "#5B7B6F",
         accent: "#6FA282",
-        error: "#E57373"
+        error: "#E57373",
+        calm: "#A8DADC",
+        moderate: "#FFD166",
+        stressed: "#EF476F",
+
       }
 
     },
