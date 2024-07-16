@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import { useFonts } from "expo-font";
 import "../global.css";
 
+import GlobalProvider from "@/context/GlobalProvider";
+
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
@@ -35,13 +37,16 @@ const RootLayout = () => {
   }
 
   return (
-    <Stack>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="details" options={{ headerShown: false }} />
-      <Stack.Screen name="terms_and_conditions" options={{ headerShown: false }} />
-      <Stack.Screen name="visualiser" options={{ headerShown: false }} />
-      <Stack.Screen name="(admin)" options={{ headerShown: false }} />
-    </Stack>
+    <GlobalProvider>
+      <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="details" options={{ headerShown: false }} />
+        <Stack.Screen name="terms_and_conditions" options={{ headerShown: false }} />
+        <Stack.Screen name="visualiser" options={{ headerShown: false }} />
+        <Stack.Screen name="(admin)" options={{ headerShown: false }} />
+      </Stack>
+    </GlobalProvider>
+    
   );
 }
 
