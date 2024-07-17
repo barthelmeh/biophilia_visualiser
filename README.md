@@ -5,6 +5,7 @@ An application developed for a full year project at the *University of Canterbur
 
 ## About
 This application helps researchers at *Scion* portray a participants psychophysiological response through a visual medium.
+It allows users to input their details which is stored to a external database. Administrators (Scion employees) are then able to alter, playback, edit, and export participant data from the application.
 
 
 #### Technologies
