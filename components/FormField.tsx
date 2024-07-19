@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { View, TextInput, Pressable, Image, Text } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
 import PickerModal from '../components/PickerModal';
 
 interface FormFieldProps<T extends string | number> {
