@@ -1,5 +1,5 @@
 export enum stressLevel {
-    Calm = "Calm",
-    Moderate = "Moderate",
-    Stressed = "Stressed"
+    CALM = "Calm",
+    MODERATE = "Moderate",
+    STRESSED = "Stressed"
 }

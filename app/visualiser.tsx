@@ -22,7 +22,7 @@ const Visualiser = () => {
     const HRVData = useGenerator(hrv_data);
     // Update these with Global Context
     const participantAge = 20;
-    const participantGender = gender.Male;
+    const participantGender = gender.MALE;
 
     useEffect(() => {
 
@@ -31,17 +31,17 @@ const Visualiser = () => {
         }
 
         switch(hrvTranslation(HRVData.hrv, participantAge, participantGender)) {
-            case stressLevel.Calm:
+            case stressLevel.CALM:
                 setBiophiliaLevel('tranquill');
                 setBiophiliaColour('text-calm');
                 break;
             
-            case stressLevel.Moderate:
+            case stressLevel.MODERATE:
                 setBiophiliaLevel('balanced');
                 setBiophiliaColour('text-moderate');
                 break;
             
-            case stressLevel.Stressed:
+            case stressLevel.STRESSED:
                 setBiophiliaLevel('tense');
                 setBiophiliaColour('text-stressed');
                 break;

@@ -14,7 +14,7 @@ const Details = () => {
         firstName: '',
         lastName: '',
         email: '',
-        activityLevel: activityLevel.Sedentary,
+        activityLevel: activityLevel.SEDENTARY,
         age: 21
     });
 
