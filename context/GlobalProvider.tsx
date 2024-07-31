@@ -1,7 +1,6 @@
 import React from 'react';
 
-const GlobalContext = React.createContext({});
-export const useGlobalContext = React.useContext(GlobalContext);
+export const GlobalContext = React.createContext({});
 
 const GlobalProvider = ({ children }: { children: React.ReactNode}) => {
     const [user, setUser] = React.useState<User | null>(null);
