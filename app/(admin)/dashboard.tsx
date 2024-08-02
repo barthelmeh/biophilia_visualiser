@@ -1,6 +1,11 @@
-import { Text, View, SafeAreaView } from 'react-native'
+import { Text, View, SafeAreaView } from 'react-native';
+import { useContext } from 'react';
+import { GlobalContext } from '@/context/GlobalProvider';
 
 const Dashboard = () => {
+
+  const { admin } = useContext(GlobalContext);
+
   return (
     <SafeAreaView className="bg-background h-full relative">
       <View className="w-full h-full relative px-4">
