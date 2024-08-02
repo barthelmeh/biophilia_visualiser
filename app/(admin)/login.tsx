@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { View, Text, Image, Pressable, SafeAreaView } from "react-native"
 import { Link, router } from 'expo-router';
+import { GlobalContext } from '@/context/GlobalProvider';
+import LogIn from '@/services/LogInService';
 
 import FormField from "@/components/FormField";
 import CustomButton from '@/components/CustomButton';
 
-import { icons } from '../../constants';
+import { icons } from '@/constants';
+import { AxiosError } from 'axios';
 
 const Login = () => {
 
@@ -21,8 +24,36 @@ const Login = () => {
     const [passwordError, setPasswordError] = useState(' ');
     const [submissionError, setSubmissionError] = useState(' ');
 
-    const submit = () => {
+    const { setAdmin } = useContext(GlobalContext);
+
+
+    const handleLoginError = (error: AxiosError) => {
+        if (error.response?.status === 401) {
+            setSubmissionError("Incorrect email or password");
+        } else {
+            setSubmissionError(error.response?.statusText ?? "Unable to communicate with server.");
+        }
+    }
+
+    const handleLogin = () => {
         setIsLoading(true);
+        
+        if(!handleValidation()) {
+            setIsLoading(false);
+            return;
+        }
+        LogIn(form.username, form.password, setAdmin)
+            .then((_) => {
+                // Successfully logged in
+                setIsLoading(false);
+                router.push('/dashboard');
+            }, (error) => {
+                setIsLoading(false);
+                handleLoginError(error.error as AxiosError);
+        });
+    }
+
+    const handleValidation = () => {
         let success = true;
 
         if(form.username.length === 0) {
@@ -35,16 +66,7 @@ const Login = () => {
             success = false;
         }
 
-        // Perform call to backend
-        // Set submission error if anything goes wrong
-        
-        setIsLoading(false);
-        if(success) {
-            setPasswordError(' ');
-            setUsernameError(' ');
-            setSubmissionError(' ');
-            router.push('/dashboard');
-        }
+        return success;
     }
 
     return (
@@ -93,7 +115,7 @@ const Login = () => {
                     <CustomButton 
                         title="Log In"
                         containerStyles="mt-8"
-                        handlePress={() => submit()}
+                        handlePress={() => handleLogin()}
                         isLoading={isLoading}
                     />
                 </View>

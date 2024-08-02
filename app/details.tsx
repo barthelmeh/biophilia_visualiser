@@ -6,16 +6,17 @@ import CustomButton from '@/components/CustomButton';
 import FormField from '@/components/FormField';
 import enumToOptions from '@/utility/enumToOptions';
 
-import { icons, activityLevel } from '../constants';
+import { icons, activityLevel, gender } from '../constants';
 
 const Details = () => {
 
-    const [form, setForm] = useState({
+    const [form, setForm] = useState<ParticipantRegister>({
         firstName: '',
         lastName: '',
         email: '',
         activityLevel: activityLevel.SEDENTARY,
-        age: 21
+        age: 21,
+        gender: gender.MALE
     });
 
     // Must be set to an empty space so the HTML element exists on the page

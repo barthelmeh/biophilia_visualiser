@@ -4,8 +4,7 @@ type ParticipantRegister = {
     email: string,
     age: number,
     gender: string,
-    activityLevel: string,
-    hasAcceptedTerms: boolean
+    activityLevel: import('../constants').activityLevel,
 }
 
 type Participant = {

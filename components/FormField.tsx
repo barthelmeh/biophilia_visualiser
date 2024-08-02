@@ -43,6 +43,7 @@ const FormField = <T extends string | number,>(props: FormFieldProps<T>) => {
                         <TextInput
                             className="flex-1"
                             style={[]}
+                            autoCapitalize='none'
                             value={props.value.toString()}
                             placeholder={props.placeholder}
                             placeholderTextColor='#5b7b6f'

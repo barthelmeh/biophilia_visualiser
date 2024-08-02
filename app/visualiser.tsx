@@ -4,7 +4,7 @@ import { Link } from 'expo-router';
 
 import useGenerator from '@/hooks/useGenerator';
 import hrvTranslation from '@/utility/hrvTranslation';
-import { gender, stressLevel } from '@/constants';
+import { activityLevel, gender, stressLevel } from '@/constants';
 
 // For now, import data for the generator from a .json
 // Should be linked up to the database
@@ -21,8 +21,16 @@ const Visualiser = () => {
 
     const HRVData = useGenerator(hrv_data);
     // Update these with Global Context
-    const participantAge = 20;
-    const participantGender = gender.MALE;
+    const participant: Participant = {
+        id: 0,
+        firstName: "Tom",
+        lastName: "Barthelmeh",
+        email: "test@test.com",
+        age: 20,
+        gender: gender.MALE,
+        activityLevel: activityLevel.MODERATELYACTIVE,
+        hasAcceptedTerms: true
+    }
 
     useEffect(() => {
 
@@ -30,7 +38,7 @@ const Visualiser = () => {
             return;
         }
 
-        switch(hrvTranslation(HRVData.hrv, participantAge, participantGender)) {
+        switch(hrvTranslation(HRVData, participant)) {
             case stressLevel.CALM:
                 setBiophiliaLevel('tranquill');
                 setBiophiliaColour('text-calm');
