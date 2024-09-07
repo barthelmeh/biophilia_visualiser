@@ -26,16 +26,28 @@ const Login = () => {
 
     const { setAdmin } = useContext(GlobalContext);
 
+    const handleValidation = (): boolean => {
+        let success = true;
 
-    const handleLoginError = (error: AxiosError) => {
-        if (error.response?.status === 401) {
-            setSubmissionError("Incorrect email or password");
-        } else {
-            setSubmissionError(error.response?.statusText ?? "Unable to communicate with server.");
+        if(form.username.length === 0) {
+            setUsernameError('Please enter a username');
+            success = false;
         }
+
+        if(form.password.length === 0) {
+            setPasswordError('Please enter a password');
+            success = false;
+        }
+
+        if(success) {
+            setUsernameError(' ');
+            setPasswordError(' ');
+        }
+
+        return success;
     }
 
-    const handleLogin = () => {
+    const handleLogin = (): void => {
         setIsLoading(true);
         
         if(!handleValidation()) {
@@ -53,20 +65,12 @@ const Login = () => {
         });
     }
 
-    const handleValidation = () => {
-        let success = true;
-
-        if(form.username.length === 0) {
-            setUsernameError('Please enter a username');
-            success = false;
+    const handleLoginError = (error: AxiosError): void => {
+        if (error.response?.status === 401) {
+            setSubmissionError("Incorrect email or password");
+        } else {
+            setSubmissionError(error.response?.statusText ?? "Unable to communicate with server.");
         }
-
-        if(form.password.length === 0) {
-            setPasswordError('Please enter a password');
-            success = false;
-        }
-
-        return success;
     }
 
     return (

@@ -1,12 +1,15 @@
 import { SafeAreaView, Text, View, Pressable, Image, ScrollView } from 'react-native';
 import { Link, router } from 'expo-router';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import getInstance from '@/services/SetAxiosHeaders';
+import { GlobalContext } from '@/context/GlobalProvider';
 
 import CustomButton from '@/components/CustomButton';
 import FormField from '@/components/FormField';
 import enumToOptions from '@/utility/enumToOptions';
 
-import { icons, activityLevel, gender } from '../constants';
+import { icons, activityLevel, gender, apiUrl } from '../constants';
+import { AxiosError } from 'axios';
 
 const Details = () => {
 
@@ -25,13 +28,14 @@ const Details = () => {
     const [lastNameError, setLastNameError] = useState(' ');
     const [emailError, setEmailError] = useState(' ');
     const [ageError, setAgeError] = useState(' ');
+    const [genderError, setGenderError] = useState(' ');
     const [activityLevelError, setActivityLevelError] = useState(' ');
     const [submissionError, setSubmissionError] = useState(' ');
 
     const [isLoading, setIsLoading] = useState(false);
+    const { admin } = useContext(GlobalContext);
 
-    const submit = () => {
-        setIsLoading(true);
+    const handleValidation = (): boolean => {
         let success = true;
 
         if(form.firstName === '') {
@@ -50,19 +54,50 @@ const Details = () => {
         }
 
         if(success) {
-            setIsLoading(false);
             setFirstNameError(' ');
             setLastNameError(' ');
             setEmailError(' ');
             setAgeError(' ');
+            setGenderError(' ');
             setActivityLevelError(' ');
             setSubmissionError(' ');
-
-            router.push('/terms_and_conditions');
         }
-        setIsLoading(false);
 
+        return success;
     }
+
+    const handleSubmit = (): void => {
+        setIsLoading(true);
+
+        if(!handleValidation()) {
+            setIsLoading(false);
+            return;
+        }
+
+        const axiosWithAuth = getInstance(admin?.token);
+        axiosWithAuth.post(`${apiUrl}/participant`, form)
+            .then((_) => {
+                // Created participant
+                setIsLoading(false);
+                router.push('/terms_and_conditions');
+            }, (error) => {
+                setIsLoading(false);
+                handleSubmitError(error as AxiosError)
+            });
+    }
+
+    const handleSubmitError = (error: AxiosError): void => {
+        if(error.response?.status === 422) {
+            setSubmissionError("Unable to insert participant. This may be due to a faulty connection.");
+        } else {
+            setSubmissionError(error.response?.statusText ?? "Unable to communicate with server.");
+        }
+    }
+
+    const debug = () => {
+        router.push('/terms_and_conditions');
+    }
+
 
     return (
         <SafeAreaView className="bg-background h-full relative">
@@ -123,17 +158,36 @@ const Details = () => {
                         />
                         <Text className='text-error -mt-6 text-sm'>{emailError}</Text>
 
-                        {/* Age */}
-                        <Text className="text-text font-body text-lg py-1">Age</Text>
-                        <FormField<number> 
-                            value={form.age}
-                            placeholder={form.age.toString()}
-                            handleChangeValue={(e) => setForm({...form, age: e})}
-                            keyboardType='numeric'
-                            isPassword={false}
-                            otherStyles='w-16'
-                        />
-                        <Text className='text-error -mt-6 text-sm'>{ageError}</Text>
+                        {/* Age and Gender */}
+                        <View className='flex-row justify-between items-center w-full'>
+                            {/* Age */}
+                            <View className='w-[30%]'>
+                                <Text className="text-text font-body text-lg py-1">Age</Text>
+                                <FormField<number> 
+                                    value={form.age}
+                                    placeholder={''}
+                                    handleChangeValue={(e) => setForm({...form, age: e})}
+                                    keyboardType='numeric'
+                                    isPassword={false}
+                                />
+                                <Text className='text-error -mt-6 text-sm'>{ageError}</Text>
+                            </View>
+
+                            {/* Gender */}
+                            <View className='w-[60%]'>
+                                <Text className="text-text font-body text-lg py-1">Gender</Text>
+                                <FormField<gender> 
+                                    value={form.gender}
+                                    placeholder={form.gender.toString()}
+                                    handleChangeValue={(e) => setForm({...form, gender: e})}
+                                    keyboardType='default'
+                                    enumOptions={enumToOptions(gender)}
+                                    isPassword={false}
+                                />
+                                <Text className='text-error -mt-6 text-sm'>{genderError}</Text>
+                            </View>
+                        </View>
+                        
 
                         {/* Activity Level */}
                         <Text className="text-text font-body text-lg py-1">Activity Level</Text>
@@ -141,7 +195,7 @@ const Details = () => {
                             value={form.activityLevel}
                             placeholder={form.activityLevel.toString()}
                             handleChangeValue={(e) => setForm({...form, activityLevel: e})}
-                            keyboardType='email-address'
+                            keyboardType='default'
                             enumOptions={enumToOptions(activityLevel)}
                             isPassword={false}
                         />
@@ -152,7 +206,7 @@ const Details = () => {
                         <CustomButton 
                             title="Next"
                             containerStyles="mt-8"
-                            handlePress={() => submit()}
+                            handlePress={() => debug()}
                             isLoading={isLoading}
                         />
                     </View>
