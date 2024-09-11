@@ -1,94 +1,65 @@
-import { useState } from 'react';
-import { View, TextInput, Pressable, Image, Text } from 'react-native';
-import PickerModal from '../components/PickerModal';
+import { useState } from "react";
+import { View, TextInput, Pressable, Image, Text } from "react-native";
+
+import { icons } from "../constants";
 
 interface FormFieldProps<T extends string | number> {
-    value: T,
-    placeholder: string,
-    handleChangeValue: (value: T) => void,
-    isPassword: boolean,
-    helperText?: string,
-    otherStyles?: string,
-    keyboardType?: 'default' | 'numeric' | 'email-address' | 'phone-pad',
-    enumOptions?: Array<{ label: string, value: T }>
+  value: T;
+  placeholder: string;
+  handleChangeValue: (value: T) => void;
+  isPassword: boolean;
+  helperText?: string;
+  otherStyles?: string;
+  autocapitalise?: "words" | "none";
+  keyboardType?: "default" | "numeric" | "email-address" | "phone-pad";
 }
 
-import { icons } from '../constants';
+const FormField = <T extends string | number>(props: FormFieldProps<T>) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
 
-const FormField = <T extends string | number,>(props: FormFieldProps<T>) => {
+  const handleFocus = () => setIsFocused(true);
+  const handleBlur = () => setIsFocused(false);
 
-    const [showPassword, setShowPassword] = useState(false);
-    const [isPickerVisible, setPickerVisible] = useState(false);
-    const [isFocused, setIsFocused] = useState(false);
+  return (
+    <View className={`${props.otherStyles ?? ""}`}>
+      <View
+        className={`flex flex-row items-center w-full py-6 px-4 border-2 text-primary bg-secondaryContainer rounded-md ${
+          isFocused ? "border-primary" : "border-background"
+        }`}
+      >
+        <TextInput
+          className="flex-1"
+          style={[]}
+          autoCapitalize={props.autocapitalise ?? "none"}
+          value={props.value.toString()}
+          placeholder={props.placeholder}
+          placeholderTextColor="#5b7b6f"
+          onChangeText={(text) => props.handleChangeValue(text as unknown as T)}
+          secureTextEntry={props.isPassword && !showPassword}
+          keyboardType={props.keyboardType}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+        />
 
-    const handlePickerClose = () => setPickerVisible(false);
-    const handleFocus = () => setIsFocused(true);
-    const handleBlur = () => setIsFocused(false);
+        {props.isPassword && (
+          <Pressable onPress={() => setShowPassword(!showPassword)}>
+            <Image
+              source={!showPassword ? icons.eye : icons.eyeHide}
+              className="w-5 h-5"
+              resizeMode="contain"
+            />
+          </Pressable>
+        )}
+      </View>
 
-    return (
-        <View className={`mb-8 ${props.otherStyles ?? ""}`}>
-            <View 
-                style={{...(props.enumOptions ? {paddingRight: 0} : {})}}
-                className={`flex flex-row items-center w-full h-14 px-4 rounded-xl border-2 ${isFocused ? 'border-secondary_text' : 'border-accent'}`}
-            >
-                {props.enumOptions 
-                    ? (
-                        <Pressable onPress={() => setPickerVisible(true)} style={{flex: 1}}>
-                            <Text style={{ flex: 1, paddingVertical: 15 }}>
-                                {props.value.toString()}
-                            </Text>
-                        </Pressable>
-                    )
-                    : (
-                        <TextInput
-                            className="flex-1"
-                            style={[]}
-                            autoCapitalize='none'
-                            value={props.value.toString()}
-                            placeholder={props.placeholder}
-                            placeholderTextColor='#5b7b6f'
-                            onChangeText={(text) => props.handleChangeValue(text as unknown as T)}
-                            secureTextEntry={props.isPassword && !showPassword}
-                            keyboardType={props.keyboardType}
-                            onFocus={handleFocus}
-                            onBlur={handleBlur}
-                        />
-                    )
-                }
-                
-                {
-                    props.isPassword &&
-                    <Pressable onPress={() => setShowPassword(!showPassword)}>
-                        <Image 
-                            source={!showPassword ? icons.eye : icons.eyeHide }
-                            className='w-5 h-5'
-                            resizeMode='contain'
-                        />
-                    </Pressable>
-                }
-            </View>
-
-            {props.enumOptions && (
-                <PickerModal
-                    visible={isPickerVisible}
-                    onClose={handlePickerClose}
-                    selectedValue={props.value}
-                    onValueChange={(value) => {
-                        props.handleChangeValue(value);
-                        handlePickerClose();
-                    }}
-                    options={props.enumOptions}
-                />
-            )}
-            {props.helperText && 
-                (
-                    <Text className="text-accent text-sm tracking-tight font-body">{props.helperText}</Text>
-                )
-            }
-            
-
-        </View>
-    );
-}
+      {props.helperText && (
+        <Text className="text-primary text-sm tracking-tight font-body">
+          {props.helperText}
+        </Text>
+      )}
+    </View>
+  );
+};
 
 export default FormField;

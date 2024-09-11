@@ -24,4 +24,20 @@ const LogIn = (username: string, password: string, setAdmin: (admin: Administrat
     });
 }
 
-export default LogIn;
+const LogOut = (token: string, setAdmin: (admin: null) => void): Promise<any> => {
+    return new Promise(function (resolve, reject) {
+
+        const axiosWithAuth = getInstance(token);
+
+        axiosWithAuth.post(`${apiUrl}/admin/logout`)
+            .then((response) => {
+                setAdmin(null);
+                resolve({ status: true });
+            }, (error) => {
+                reject({ status: false, error: error });
+            })
+
+    });
+}
+
+export {LogIn, LogOut};
