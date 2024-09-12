@@ -27,6 +27,7 @@ const SearchBar = (props: SearchBarProps) => {
         placeholderTextColor="#5b7b6f"
         onChangeText={(text) => props.onChange(text)}
         keyboardType="default"
+        className="text-primary font-body"
       />
     </View>
   );
