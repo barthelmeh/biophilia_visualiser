@@ -74,7 +74,7 @@ const Participants = () => {
   }, [admin]);
 
   const handleLogout = () => {
-    if (!admin || !admin.token) {
+    if (!admin) {
       router.navigate({ pathname: "/" });
       return;
     }
