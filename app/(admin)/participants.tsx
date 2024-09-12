@@ -15,7 +15,7 @@ const Participants = () => {
   const { admin, setAdmin, setParticipant } = useContext(GlobalContext);
 
   if (!admin) {
-    router.navigate("");
+    router.navigate({ pathname: "/" });
     return;
   }
 
@@ -65,7 +65,6 @@ const Participants = () => {
     axios.get(`${apiUrl}/participant`).then(
       (response) => {
         setParticipants(response.data);
-        console.log("Gotten all participants on /participants");
         setFilteredParticipants(response.data);
       },
       (error) => {
@@ -76,7 +75,7 @@ const Participants = () => {
 
   const handleLogout = () => {
     if (!admin || !admin.token) {
-      router.navigate("");
+      router.navigate({ pathname: "/" });
       return;
     }
 
@@ -84,7 +83,7 @@ const Participants = () => {
       (_) => {
         // Successfully logged out
         setParticipant(null);
-        router.navigate("");
+        router.navigate({ pathname: "/" });
       },
       (error) => {
         handleLogoutError(error.error as AxiosError);

@@ -10,7 +10,7 @@ interface FormFieldProps<T extends string | number> {
   isPassword: boolean;
   helperText?: string;
   otherStyles?: string;
-  autocapitalise?: "words" | "none";
+  autocapitalise?: "words" | "none" | "sentences";
   keyboardType?: "default" | "numeric" | "email-address" | "phone-pad";
 }
 

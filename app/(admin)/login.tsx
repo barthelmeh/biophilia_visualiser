@@ -54,6 +54,7 @@ const Login = () => {
       setIsLoading(false);
       return;
     }
+    console.log("Logging in");
     LogIn(form.username, form.password, setAdmin).then(
       (_) => {
         // Successfully logged in
@@ -87,7 +88,7 @@ const Login = () => {
         <View className="w-full h-full px-4">
           {/* Back button */}
           <View className="absolute top-0 left-0 px-4 py-2">
-            <Link href="" asChild>
+            <Link href={"/"} asChild>
               <Pressable>
                 <Image
                   source={icons.leftArrow}

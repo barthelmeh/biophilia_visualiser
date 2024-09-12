@@ -1,4 +1,10 @@
-import { SafeAreaView, View, Text, FlatList } from "react-native";
+import {
+  SafeAreaView,
+  View,
+  Text,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
 import React from "react";
 import { GlobalContext } from "@/context/GlobalProvider";
@@ -16,7 +22,7 @@ const Participant = () => {
     React.useContext(GlobalContext);
 
   if (!admin) {
-    router.navigate("");
+    router.navigate({ pathname: "/" });
     return;
   }
 
@@ -45,7 +51,6 @@ const Participant = () => {
         setIsLoadingSessions(false);
         // TODO: Filter sessions so that its just your sessions that show
         setSessions(response.data);
-        console.log("Gotten all sessions on /participant");
       },
       (error) => {
         setIsLoadingSessions(false);
@@ -76,14 +81,20 @@ const Participant = () => {
         </View>
 
         {/* FlatList */}
-        <FlatList
-          className="w-full flex-1" // Ensures FlatList takes remaining space
-          data={sessions}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => <SessionCard session={item} />}
-          ItemSeparatorComponent={() => <View className="h-4" />} // Gap between items
-          contentContainerStyle={{ paddingBottom: 80, paddingTop: 10 }} // Adds padding to avoid overlap
-        />
+        {isLoadingSessions ? (
+          <View className="flex justify-center items-center w-full flex-1">
+            <ActivityIndicator animating={true} />
+          </View>
+        ) : (
+          <FlatList
+            className="w-full flex-1" // Ensures FlatList takes remaining space
+            data={sessions}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => <SessionCard session={item} />}
+            ItemSeparatorComponent={() => <View className="h-4" />} // Gap between items
+            contentContainerStyle={{ paddingBottom: 80, paddingTop: 10 }} // Adds padding to avoid overlap
+          />
+        )}
 
         {/* Button placed at the bottom */}
         <View className="w-full py-4 bg-background">

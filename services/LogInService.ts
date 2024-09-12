@@ -6,6 +6,9 @@ const LogIn = (username: string, password: string, setAdmin: (admin: Administrat
     return new Promise(function (resolve, reject) {
         const axiosWithoutAuth = getInstance(null);
 
+        console.log(username, password);
+        console.log(`${apiUrl}/admin/login`)
+
         axiosWithoutAuth.post(`${apiUrl}/admin/login`, {username: username, password: password})
             .then((response) => {
                 const id = parseInt(response.data.id, 10);
@@ -19,6 +22,10 @@ const LogIn = (username: string, password: string, setAdmin: (admin: Administrat
                 
                 resolve({status: true});
             }, (error) => {
+                console.log("log in error");
+                console.log(error.response);
+                console.log(error.error);
+                console.log(error.status);
                 reject({ status: false, error: error });
             });
     });
