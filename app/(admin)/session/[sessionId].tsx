@@ -55,7 +55,6 @@ const Session = () => {
     axios.get(`${apiUrl}/session/${sessionId}`).then(
       (response) => {
         setSession(response.data);
-        console.log(response.data);
         setIsLoadingSession(false);
       },
       (error) => {
@@ -95,6 +94,32 @@ const Session = () => {
             <Text className="font-body text-sm text-primary -mt-2">
               {formatDate(session.start)}
             </Text>
+          </View>
+
+          {/* Visualise button */}
+          <View className="w-full flex justify-center items-center py-12">
+            <CustomButton
+              containerStyles="w-full"
+              title="Visualise session"
+              isLoading={false}
+            />
+          </View>
+
+          {/* Existing timeframes */}
+          <View className="flex justify-start items-start w-full mt-6 mb-2">
+            <Text className="text-primary font-title font-bold ">
+              Existing Timeframes
+            </Text>
+            <Text className="text-primary text-small italic font-body">
+              Click on a timeframe for more options
+            </Text>
+          </View>
+
+          {/* List of existing timeframes */}
+          <View className="flex-1 w-full justify-center items-center gap-2 pb-10">
+            {session.timeframes?.map((timeframe) => (
+              <TimeframeCard key={timeframe.id} timeframe={timeframe} />
+            ))}
           </View>
 
           {/* Add a timeframe */}
@@ -160,20 +185,6 @@ const Session = () => {
           </View>
 
           <CustomButton title={"Create a new Timeframe"} isLoading={false} />
-
-          {/* Existing timeframes */}
-          <View className="flex justify-start items-start w-full mt-6 mb-2">
-            <Text className="text-primary font-title font-bold ">
-              Existing Timeframes
-            </Text>
-          </View>
-
-          {/* List of existing timeframes */}
-          <View className="flex-1 w-full justify-center items-center space-y-2">
-            {session.timeframes?.map((timeframe) => (
-              <TimeframeCard key={timeframe.id} timeframe={timeframe} />
-            ))}
-          </View>
 
           {/* <FlatList
             data={session.timeframes ?? []}

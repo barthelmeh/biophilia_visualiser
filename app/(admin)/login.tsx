@@ -54,7 +54,6 @@ const Login = () => {
       setIsLoading(false);
       return;
     }
-    console.log("Logging in");
     LogIn(form.username, form.password, setAdmin).then(
       (_) => {
         // Successfully logged in
