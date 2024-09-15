@@ -24,14 +24,18 @@ const LogIn = (username: string, password: string, setAdmin: (admin: Administrat
     });
 }
 
-const LogOut = (token: string, setAdmin: (admin: null) => void): Promise<any> => {
+const LogOut = (token: string, setAdminNull: (admin: null) => void, setParticipantNull: (participant: null) => void): Promise<any> => {
     return new Promise(function (resolve, reject) {
 
         const axiosWithAuth = getInstance(token);
 
         axiosWithAuth.post(`${apiUrl}/admin/logout`)
-            .then((response) => {
-                setAdmin(null);
+            .then((_) => {
+                // Delay state changes
+                setTimeout(() => {
+                    setAdminNull(null);
+                    setParticipantNull(null);
+                }, 0);
                 resolve({ status: true });
             }, (error) => {
                 reject({ status: false, error: error });

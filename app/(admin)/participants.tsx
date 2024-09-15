@@ -74,15 +74,14 @@ const Participants = () => {
   }, [admin]);
 
   const handleLogout = () => {
-    if (!admin) {
+    if (admin == null) {
       router.navigate({ pathname: "/" });
       return;
     }
 
-    LogOut(admin.token, setAdmin).then(
+    LogOut(admin.token, setAdmin, setParticipant).then(
       (_) => {
         // Successfully logged out
-        setParticipant(null);
         router.navigate({ pathname: "/" });
       },
       (error) => {
