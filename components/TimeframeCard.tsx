@@ -20,7 +20,7 @@ const TimeframeCard = (props: TimeframeCardProps) => {
     <View className="bg-secondaryContainer rounded-3xl w-full p-4 flex justify-center items-center relative">
       {/* Text */}
       <View className="flex w-full items-start justify-center">
-        <Text className="text-primary font-body font-bold text-2xl">
+        <Text className="text-primary font-body font-bold text-xl">
           {formatTime(props.timeframe.startTime) +
             " to " +
             formatTime(props.timeframe.endTime)}
