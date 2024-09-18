@@ -1,79 +1,111 @@
-import { View, Text } from "react-native";
+import { View, Text, Pressable, Image } from "react-native";
 import FormField from "../FormField";
 import CustomButton from "../CustomButton";
 import React from "react";
 
+import { icons } from "@/constants";
+import TimeInput from "../TimeInput";
+
 interface CreateTimeframeProps {
-  sessionId: number;
+  session: Session;
   handleClose: () => void;
   handleCreateTimeframe: (form: TimeframeCreate) => void;
 }
 
 const CreateTimeframeModalContent = (props: CreateTimeframeProps) => {
   const [timeframeForm, setTimeframeForm] = React.useState<TimeframeCreate>({
-    sessionId: props.sessionId,
+    sessionId: props.session.id,
     description: "",
     startTime: "",
     endTime: "",
   });
 
-  const [startTimeError, setStartTimeError] = React.useState(" ");
-  const [endTimeError, setEndTimeError] = React.useState(" ");
   const [descriptionError, setDescriptionError] = React.useState(" ");
+  const [error, setError] = React.useState(" ");
 
   const [isLoading, setIsLoading] = React.useState(false);
 
+  const handleStartTimeChange = (startTime: string) => {
+    if (timeframeForm.endTime.length > 0) {
+      const endDate = new Date(timeframeForm.endTime);
+      const startDate = new Date(startTime);
+      if (endDate <= startDate) {
+        setError("The end time must be after the start time");
+      } else {
+        setError(" ");
+      }
+    }
+
+    setTimeframeForm({ ...timeframeForm, startTime });
+  };
+
+  const handleEndTimeChange = (endTime: string) => {
+    if (timeframeForm.startTime.length > 0) {
+      const endDate = new Date(endTime);
+      const startDate = new Date(timeframeForm.startTime);
+      if (endDate <= startDate) {
+        setError("The end time must be after the start time");
+      } else {
+        setError(" ");
+      }
+    }
+
+    setTimeframeForm({ ...timeframeForm, endTime });
+  };
+
   const handleCreatePressed = () => {
     // Check for input errors
+    if (timeframeForm.description.length === 0) {
+      setDescriptionError("Please supply a description");
+      return;
+    }
+
+    setDescriptionError(" ");
+
+    if (timeframeForm.endTime.length === 0) {
+      setError("Please supply an ending time");
+      return;
+    }
+
+    setError(" ");
+
+    if (timeframeForm.startTime.length === 0) {
+      setError("Please supply a starting time");
+      return;
+    }
+
+    const endDate = new Date(timeframeForm.endTime);
+    const startDate = new Date(timeframeForm.startTime);
+    if (endDate <= startDate) {
+      setError("The end time must be after the start time");
+      return;
+    }
+
+    setError(" ");
 
     setIsLoading(true);
+
     props.handleCreateTimeframe(timeframeForm);
   };
 
   return (
-    <View className="bg-secondaryContainer rounded-md p-6 flex justify-center items-start w-full">
-      <View className="flex justify-center items-center w-full">
-        <View className="flex justify-start items-start w-full mt-6 mb-2">
-          <Text className="text-primary font-title font-bold ">
-            Create a new timeframe
-          </Text>
-        </View>
+    <View className="bg-background rounded-md p-6 flex justify-center items-start w-full">
+      <Pressable
+        onPress={props.handleClose}
+        className="absolute top-0 right-0 p-4"
+      >
+        <Image source={icons.cross} className="w-5 h-5" resizeMode="contain" />
+      </Pressable>
 
-        <View className="flex flex-row justify-between gap-2 w-full">
-          <View className="flex-1 justify-center">
-            {/* Start Time */}
-            <Text className="text-primary font-body text-lg py-1">
-              Start time
-            </Text>
-            <FormField<string>
-              value={timeframeForm.startTime}
-              placeholder={"HH:MM"}
-              handleChangeValue={(e) =>
-                setTimeframeForm({ ...timeframeForm, startTime: e })
-              }
-              isPassword={false}
-            />
-            <Text className="text-error text-sm">{startTimeError}</Text>
-          </View>
+      <Text className="font-title font-bold text-2xl text-start text-primary">
+        Create a New Timeframe
+      </Text>
+      <Text className="font-body text-start text-primary">
+        Timeframes appear in playback
+      </Text>
 
-          <View className="flex-1 justify-center">
-            {/* End Time */}
-            <Text className="text-primary font-body text-lg py-1">
-              End time
-            </Text>
-            <FormField<string>
-              value={timeframeForm.endTime}
-              placeholder={"HH:MM"}
-              handleChangeValue={(e) =>
-                setTimeframeForm({ ...timeframeForm, endTime: e })
-              }
-              isPassword={false}
-            />
-            <Text className="text-error text-sm">{endTimeError}</Text>
-          </View>
-        </View>
-
-        <View className="flex justify-center w-full">
+      <View className="w-full justify-center items-center">
+        <View className="flex justify-center w-full mt-2">
           {/* Description */}
           <Text className="text-primary font-body text-lg py-1">
             Description
@@ -87,15 +119,39 @@ const CreateTimeframeModalContent = (props: CreateTimeframeProps) => {
             isPassword={false}
             autocapitalise="sentences"
           />
-          <Text className="text-error mb-4 text-sm">{descriptionError}</Text>
+          <Text className="text-error text-sm">{descriptionError}</Text>
+        </View>
+
+        <View className="flex justify-center w-full">
+          {/* Start Time */}
+          <Text className="text-primary font-body text-lg py-1">
+            Start time
+          </Text>
+          <TimeInput
+            handleValueChange={(e) => handleStartTimeChange(e)}
+            date={new Date(props.session.start)}
+          />
+        </View>
+
+        <View className="flex justify-center w-full">
+          {/* End Time */}
+          <Text className="text-primary font-body text-lg py-1">End time</Text>
+          <TimeInput
+            handleValueChange={(e) => handleEndTimeChange(e)}
+            date={new Date(props.session.start)}
+          />
         </View>
       </View>
 
-      <CustomButton
-        title={"Create a new Timeframe"}
-        isLoading={isLoading}
-        handlePress={handleCreatePressed}
-      />
+      <Text className="text-error text-start text-sm">{error}</Text>
+
+      <View className="w-full mt-4">
+        <CustomButton
+          title={"Create a new Timeframe"}
+          isLoading={isLoading}
+          handlePress={handleCreatePressed}
+        />
+      </View>
     </View>
   );
 };

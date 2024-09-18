@@ -14,6 +14,9 @@ import Modal from "@/components/modal/Modal";
 import DeleteModalContent from "@/components/modal/DeleteModalContent";
 import LoadingScreen from "@/components/LoadingScreen";
 import CreateTimeframeModalContent from "@/components/modal/CreateTimeframeModalContent";
+import IconButton from "@/components/IconButton";
+
+import { icons } from "@/constants";
 
 const Session = () => {
   const { sessionId } = useLocalSearchParams();
@@ -51,7 +54,15 @@ const Session = () => {
     setIsDeleteModalOpen(true);
   };
 
-  const handleCreateTimeframe = (form: TimeframeCreate) => {};
+  const handeOpenCreateTimeframeModal = () => {
+    // Reset the modal
+    setIsCreateTimeframeModalOpen(true);
+  };
+
+  const handleCreateTimeframe = (form: TimeframeCreate) => {
+    setIsCreateTimeframeModalOpen(false);
+    SuccessToast("Successfully created timeframe");
+  };
 
   const handleDeleteTimeframe = () => {
     // TODO: Delete the timeframe
@@ -105,7 +116,7 @@ const Session = () => {
         </View>
 
         {/* Seassion Name Header */}
-        <View className="flex justify-start items-start mt-8 mb-2 w-full">
+        <View className="flex justify-center items-center mt-2 mb-6 w-full">
           <Text className="font-bold font-title text-4xl leading-normal text-primary">
             {session.name}
           </Text>
@@ -115,13 +126,22 @@ const Session = () => {
         </View>
 
         {/* Existing timeframes */}
-        <View className="flex justify-start items-start w-full mt-6 mb-2">
-          <Text className="text-primary font-title font-bold ">
-            Existing Timeframes
-          </Text>
-          <Text className="text-primary text-small italic font-body">
-            Click on a timeframe for more options
-          </Text>
+        <View className="flex flex-row justify-between mt-6 mb-2 w-full">
+          <View className="flex justify-start items-start">
+            <Text className="font-bold font-title text-start text-4xl leading-normal text-primary">
+              Timeframes
+            </Text>
+            <Text className="font-body text-sm text-start text-primary -mt-4">
+              Mark out specific events
+            </Text>
+          </View>
+
+          <View className="flex justify-center items-center">
+            <IconButton
+              icon={icons.plusWhite}
+              handlePress={handeOpenCreateTimeframeModal}
+            />
+          </View>
         </View>
 
         {/* List of existing timeframes */}
@@ -158,8 +178,8 @@ const Session = () => {
 
       <Modal isOpen={isCreateTimeframeModalOpen}>
         <CreateTimeframeModalContent
-          sessionId={session?.id ?? -1}
-          handleClose={() => setIsDeleteModalOpen(false)}
+          session={session}
+          handleClose={() => setIsCreateTimeframeModalOpen(false)}
           handleCreateTimeframe={handleCreateTimeframe}
         />
       </Modal>

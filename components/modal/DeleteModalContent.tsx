@@ -10,7 +10,7 @@ interface DeleteProps {
 
 const DeleteModalContent = (props: DeleteProps) => {
   return (
-    <View className="bg-secondaryContainer rounded-md p-6 flex justify-center items-start w-full">
+    <View className="bg-background rounded-md p-6 flex justify-center items-start w-full">
       <Text className="font-title font-bold text-2xl text-start text-primary">
         {props.title}
       </Text>
