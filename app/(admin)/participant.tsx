@@ -132,8 +132,8 @@ const Participant = () => {
             renderItem={({ item }) => (
               <SessionCard session={item} onDelete={handleOpenDeleteModal} />
             )}
-            ItemSeparatorComponent={() => <View className="h-4" />} // Gap between items
-            contentContainerStyle={{ paddingBottom: 80, paddingTop: 10 }} // Adds padding to avoid overlap
+            ItemSeparatorComponent={() => <View className="h-4" />}
+            contentContainerStyle={{ paddingBottom: 80, paddingTop: 10 }}
           />
         )}
 
