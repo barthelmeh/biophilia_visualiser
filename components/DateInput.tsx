@@ -2,7 +2,6 @@ import { View, Text, TextInput } from "react-native";
 import React from "react";
 
 interface DateInputProps {
-  value: Date;
   handleChangeValue: (newValue: Date) => void;
   setError: (error: string) => void;
 }
@@ -23,7 +22,6 @@ const DateInput = (props: DateInputProps) => {
       monthInput.current?.focus();
       setFocused(1);
     }
-    updateValue();
   };
 
   const handleMonthChange = (newMonth: string) => {
@@ -33,7 +31,6 @@ const DateInput = (props: DateInputProps) => {
       yearInput.current?.focus();
       setFocused(2);
     }
-    updateValue();
   };
 
   const handleYearChange = (newYear: string) => {
@@ -42,20 +39,23 @@ const DateInput = (props: DateInputProps) => {
       yearInput.current?.blur();
       setFocused(-1);
     }
+  };
+
+  React.useEffect(() => {
+    const updateValue = () => {
+      if (day.length == 2 && month.length == 2 && year.length == 4) {
+        const date = new Date(
+          parseInt(year, 10),
+          parseInt(month, 10) - 1,
+          parseInt(day, 10)
+        );
+
+        props.handleChangeValue(date);
+      }
+    };
+
     updateValue();
-  };
-
-  const updateValue = () => {
-    if (day.length == 2 && month.length == 2 && year.length == 4) {
-      const date = new Date(
-        parseInt(year, 10),
-        parseInt(month, 10) - 1,
-        parseInt(day, 10)
-      );
-
-      props.handleChangeValue(date);
-    }
-  };
+  }, [day, month, year]);
 
   const [focused, setFocused] = React.useState(-1);
 
@@ -63,13 +63,13 @@ const DateInput = (props: DateInputProps) => {
     <View className="flex flex-row">
       {/* Day input */}
       <View
-        className={`w-1/4 items-center py-6 px-4 text-primary bg-secondaryContainer rounded-md border-2 ${
+        className={`w-1/4 items-center py-5 px-4 text-primary bg-secondaryContainer rounded-md border-2 ${
           focused == 0 ? "border-primary" : "border-background"
         }`}
       >
         <TextInput
           ref={dayInput}
-          className="flex-1"
+          className="flex-1 w-full text-center"
           autoCapitalize="none"
           value={day}
           onChangeText={(day) => handleDayChange(day)}
@@ -89,7 +89,7 @@ const DateInput = (props: DateInputProps) => {
       >
         <TextInput
           ref={monthInput}
-          className="flex-1"
+          className="flex-1 w-full text-center"
           autoCapitalize="none"
           value={month}
           onChangeText={(month) => handleMonthChange(month)}
@@ -109,7 +109,7 @@ const DateInput = (props: DateInputProps) => {
       >
         <TextInput
           ref={yearInput}
-          className="flex-1"
+          className="flex-1 w-full text-center"
           autoCapitalize="none"
           value={year}
           onChangeText={(year) => handleYearChange(year)}

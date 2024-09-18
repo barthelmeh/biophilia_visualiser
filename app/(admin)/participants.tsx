@@ -10,6 +10,7 @@ import ParticipantCard from "@/components/ParticipantCard";
 import SearchBar from "@/components/SearchBar";
 
 import { apiUrl } from "@/constants";
+import { ErrorToast, SuccessToast } from "@/components/ToastComponents";
 
 const Participants = () => {
   const { admin, setAdmin, setParticipant } = useContext(GlobalContext);
@@ -75,6 +76,7 @@ const Participants = () => {
 
   const handleLogout = () => {
     if (admin == null) {
+      ErrorToast("Unable to logout. No admin");
       router.navigate({ pathname: "/" });
       return;
     }
@@ -82,6 +84,7 @@ const Participants = () => {
     LogOut(admin.token, setAdmin, setParticipant).then(
       (_) => {
         // Successfully logged out
+        SuccessToast("Successfully logged out");
         router.navigate({ pathname: "/" });
       },
       (error) => {
@@ -91,6 +94,7 @@ const Participants = () => {
   };
 
   const handleLogoutError = (error: AxiosError) => {
+    ErrorToast("Error logging out");
     console.log(`Logout error: ${error}`);
   };
 

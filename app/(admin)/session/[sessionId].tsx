@@ -1,16 +1,19 @@
 import { GlobalContext } from "@/context/GlobalProvider";
 import { apiUrl } from "@/constants";
-import { View, Text, SafeAreaView, ScrollView, FlatList } from "react-native";
+import { View, Text, SafeAreaView, ScrollView } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
 import React from "react";
 import NotFound from "@/components/NotFound";
-import LoadingScreen from "@/components/LoadingScreen";
 import getInstance from "@/services/SetAxiosHeaders";
 
 import PersonalInformationCard from "@/components/PersonalInformationCard";
 import TimeframeCard from "@/components/TimeframeCard";
-import FormField from "@/components/FormField";
 import CustomButton from "@/components/CustomButton";
+import { ErrorToast, SuccessToast } from "@/components/ToastComponents";
+import Modal from "@/components/modal/Modal";
+import DeleteModalContent from "@/components/modal/DeleteModalContent";
+import LoadingScreen from "@/components/LoadingScreen";
+import CreateTimeframeModalContent from "@/components/modal/CreateTimeframeModalContent";
 
 const Session = () => {
   const { sessionId } = useLocalSearchParams();
@@ -29,17 +32,11 @@ const Session = () => {
   const [session, setSession] = React.useState<Session | null>(null);
   const [isLoadingSession, setIsLoadingSession] = React.useState(true);
 
-  const [timeframeForm, setTimeframeForm] = React.useState<TimeframeCreate>({
-    sessionId: session?.id ?? -1,
-    description: "",
-    startTime: "",
-    endTime: "",
-  });
-
-  const [startTimeError, setStartTimeError] = React.useState(" ");
-  const [endTimeError, setEndTimeError] = React.useState(" ");
-  const [descriptionError, setDescriptionError] = React.useState(" ");
-  const [submissionError, setSubmissionError] = React.useState(" ");
+  const [selectedTimeframe, setSelectedTimeframe] =
+    React.useState<Timeframe | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
+  const [isCreateTimeframeModalOpen, setIsCreateTimeframeModalOpen] =
+    React.useState(false);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -47,6 +44,27 @@ const Session = () => {
     const month = date.toLocaleString("default", { month: "long" });
     const year = date.getFullYear();
     return `${day.toString()} ${month.toString()} ${year.toString()}`;
+  };
+
+  const handleOpenDeleteModal = (timeframe: Timeframe) => {
+    setSelectedTimeframe(timeframe);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleCreateTimeframe = (form: TimeframeCreate) => {};
+
+  const handleDeleteTimeframe = () => {
+    // TODO: Delete the timeframe
+    setSelectedTimeframe(null);
+    setIsDeleteModalOpen(false);
+    SuccessToast("Successfully deleted timeframe");
+
+    if (session && session.timeframes) {
+      const newTimeframes = session.timeframes.filter(
+        (timeframe) => timeframe.id !== selectedTimeframe?.id
+      );
+      setSession({ ...session, timeframes: newTimeframes });
+    }
   };
 
   React.useEffect(() => {
@@ -59,7 +77,8 @@ const Session = () => {
       },
       (error) => {
         // TODO: Handle the error
-        setIsLoadingSession(false);
+        router.back();
+        ErrorToast("Unable to load session");
       }
     );
   }, [sessionId]);
@@ -96,15 +115,6 @@ const Session = () => {
             </Text>
           </View>
 
-          {/* Visualise button */}
-          <View className="w-full flex justify-center items-center py-12">
-            <CustomButton
-              containerStyles="w-full"
-              title="Visualise session"
-              isLoading={false}
-            />
-          </View>
-
           {/* Existing timeframes */}
           <View className="flex justify-start items-start w-full mt-6 mb-2">
             <Text className="text-primary font-title font-bold ">
@@ -118,82 +128,40 @@ const Session = () => {
           {/* List of existing timeframes */}
           <View className="flex-1 w-full justify-center items-center gap-2 pb-10">
             {session.timeframes?.map((timeframe) => (
-              <TimeframeCard key={timeframe.id} timeframe={timeframe} />
+              <TimeframeCard
+                key={timeframe.id}
+                timeframe={timeframe}
+                onDelete={handleOpenDeleteModal}
+              />
             ))}
           </View>
 
-          {/* Add a timeframe */}
-          <View className="flex justify-center items-center w-full">
-            <View className="flex justify-start items-start w-full mt-6 mb-2">
-              <Text className="text-primary font-title font-bold ">
-                Create a new timeframe
-              </Text>
-            </View>
-
-            <View className="flex flex-row justify-between gap-2 w-full">
-              <View className="flex-1 justify-center">
-                {/* Start Time */}
-                <Text className="text-primary font-body text-lg py-1">
-                  Start time
-                </Text>
-                <FormField<string>
-                  value={timeframeForm.startTime}
-                  placeholder={"HH:MM"}
-                  handleChangeValue={(e) =>
-                    setTimeframeForm({ ...timeframeForm, startTime: e })
-                  }
-                  isPassword={false}
-                />
-                <Text className="text-error text-sm">{startTimeError}</Text>
-              </View>
-
-              <View className="flex-1 justify-center">
-                {/* End Time */}
-                <Text className="text-primary font-body text-lg py-1">
-                  End time
-                </Text>
-                <FormField<string>
-                  value={timeframeForm.endTime}
-                  placeholder={"HH:MM"}
-                  handleChangeValue={(e) =>
-                    setTimeframeForm({ ...timeframeForm, endTime: e })
-                  }
-                  isPassword={false}
-                />
-                <Text className="text-error text-sm">{endTimeError}</Text>
-              </View>
-            </View>
-
-            <View className="flex justify-center w-full">
-              {/* Description */}
-              <Text className="text-primary font-body text-lg py-1">
-                Description
-              </Text>
-              <FormField<string>
-                value={timeframeForm.description}
-                placeholder={"Enter the description"}
-                handleChangeValue={(e) =>
-                  setTimeframeForm({ ...timeframeForm, description: e })
-                }
-                isPassword={false}
-                autocapitalise="sentences"
-              />
-              <Text className="text-error mb-4 text-sm">
-                {descriptionError}
-              </Text>
-            </View>
+          {/* Visualise button */}
+          <View className="w-full flex justify-center items-center py-12">
+            <CustomButton
+              containerStyles="w-full"
+              title="Visualise session"
+              isLoading={false}
+            />
           </View>
-
-          <CustomButton title={"Create a new Timeframe"} isLoading={false} />
-
-          {/* <FlatList
-            data={session.timeframes ?? []}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => <TimeframeCard timeframe={item} />}
-            ItemSeparatorComponent={() => <View className="h-4" />} // Gap between items
-            contentContainerStyle={{ paddingBottom: 50, paddingTop: 10 }}
-          /> */}
         </View>
+
+        <Modal isOpen={isDeleteModalOpen}>
+          <DeleteModalContent
+            title={"Delete Timeframe"}
+            handleClose={() => setIsDeleteModalOpen(false)}
+            entityName={selectedTimeframe?.description ?? ""}
+            handleDelete={handleDeleteTimeframe}
+          />
+        </Modal>
+
+        <Modal isOpen={isCreateTimeframeModalOpen}>
+          <CreateTimeframeModalContent
+            sessionId={session?.id ?? -1}
+            handleClose={() => setIsDeleteModalOpen(false)}
+            handleCreateTimeframe={handleCreateTimeframe}
+          />
+        </Modal>
       </ScrollView>
     </SafeAreaView>
   );

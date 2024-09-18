@@ -14,6 +14,8 @@ import CustomButton from "@/components/CustomButton";
 import { images } from "../constants";
 
 export default function Index() {
+  // Query the backend with a "heartbeat" to check if its working every 20 seconds
+
   return (
     <SafeAreaView className="bg-background h-full relative">
       <StatusBar barStyle={"dark-content"} />

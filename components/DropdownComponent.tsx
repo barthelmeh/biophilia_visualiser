@@ -17,7 +17,6 @@ interface DropdownComponentData<T extends string> {
 
 interface DropdownComponentProps<T extends string> {
   data: DropdownComponentData<T>[];
-  value: T | null;
   placeholder: string;
   handleChangeValue: (value: T) => void;
 }
@@ -26,7 +25,7 @@ const DropdownComponent = <T extends string>(
   props: DropdownComponentProps<T>
 ) => {
   const [expanded, setExpanded] = React.useState(false);
-  const [value, setValue] = React.useState("");
+  const [label, setLabel] = React.useState<string | null>(null);
 
   const [dropdownTop, setDropdownTop] = React.useState(0);
   const [dropdownWidth, setDropdownWidth] = React.useState(0);
@@ -41,7 +40,7 @@ const DropdownComponent = <T extends string>(
 
   const onSelect = React.useCallback((item: DropdownComponentData<T>) => {
     props.handleChangeValue(item.value);
-    setValue(item.label);
+    setLabel(item.label);
     setExpanded(false);
   }, []);
 
@@ -71,7 +70,7 @@ const DropdownComponent = <T extends string>(
         onPress={toggleExpanded}
       >
         <Text className="text-primary font-body">
-          {value || props.placeholder}
+          {label || props.placeholder}
         </Text>
         <AntDesign name={expanded ? "caretup" : "caretdown"} color="#5B7B6F" />
       </TouchableOpacity>

@@ -11,30 +11,29 @@ const formatTime = (dateString: string) => {
 
 interface TimeframeCardProps {
   timeframe: Timeframe;
+  onDelete: (timeframe: Timeframe) => void;
 }
 
 const TimeframeCard = (props: TimeframeCardProps) => {
-  const handleDeleteTimeframe = () => {};
-
   return (
     <View className="bg-secondaryContainer rounded-3xl w-full p-4 flex justify-center items-center relative">
       {/* Text */}
       <View className="flex w-full items-start justify-center">
-        <Text className="text-primary font-body font-bold text-xl">
+        <Text className="text-primary font-body font-bold line-clamp-2 text-lg">
+          {props.timeframe.description}
+        </Text>
+        <Text className="text-primary font-body">
           {formatTime(props.timeframe.startTime) +
             " to " +
             formatTime(props.timeframe.endTime)}
         </Text>
-        <Text className="text-primary font-body line-clamp-2">
-          {props.timeframe.description}
-        </Text>
       </View>
       {/* Delete button */}
       <View className="absolute top-1/2 right-0 pe-5">
-        <Pressable onPress={handleDeleteTimeframe}>
+        <Pressable onPress={() => props.onDelete(props.timeframe)}>
           <Image
             source={icons.trashIcon}
-            className="h-8 w-8 text-text"
+            className="h-6 w-6 text-text"
             resizeMode="contain"
           />
         </Pressable>

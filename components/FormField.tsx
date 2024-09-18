@@ -29,7 +29,7 @@ const FormField = <T extends string | number>(props: FormFieldProps<T>) => {
         }`}
       >
         <TextInput
-          className="flex-1"
+          className="flex-1 w-full"
           style={[]}
           autoCapitalize={props.autocapitalise ?? "none"}
           value={props.value.toString()}

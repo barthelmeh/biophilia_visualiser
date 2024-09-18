@@ -2,6 +2,8 @@ import { Stack, SplashScreen } from "expo-router";
 import { useEffect } from "react";
 import { useFonts } from "expo-font";
 import "../global.css";
+import { Toaster } from "sonner-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import GlobalProvider from "@/context/GlobalProvider";
 
@@ -36,18 +38,21 @@ const RootLayout = () => {
   }
 
   return (
-    <GlobalProvider>
-      <Stack>
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-        <Stack.Screen name="details" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="terms_and_conditions"
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen name="all_done" options={{ headerShown: false }} />
-        <Stack.Screen name="(admin)" options={{ headerShown: false }} />
-      </Stack>
-    </GlobalProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <GlobalProvider>
+        <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="details" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="terms_and_conditions"
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen name="all_done" options={{ headerShown: false }} />
+          <Stack.Screen name="(admin)" options={{ headerShown: false }} />
+        </Stack>
+        <Toaster />
+      </GlobalProvider>
+    </GestureHandlerRootView>
   );
 };
 

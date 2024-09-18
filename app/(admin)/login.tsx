@@ -10,6 +10,8 @@ import DismissKeyboard from "@/components/DismissKeyboard";
 
 import { icons } from "@/constants";
 import { AxiosError } from "axios";
+import { ErrorToast } from "@/components/ToastComponents";
+import { SuccessToast } from "@/components/ToastComponents";
 
 const Login = () => {
   const [form, setForm] = useState({
@@ -54,6 +56,7 @@ const Login = () => {
       setIsLoading(false);
       return;
     }
+
     LogIn(form.username, form.password, setAdmin).then(
       (_) => {
         // Successfully logged in
@@ -62,6 +65,7 @@ const Login = () => {
           username: "",
           password: "",
         });
+        SuccessToast("Successfully logged in");
         router.push("/participants");
       },
       (error) => {
@@ -73,9 +77,9 @@ const Login = () => {
 
   const handleLoginError = (error: AxiosError): void => {
     if (error.response?.status === 401) {
-      setSubmissionError("Incorrect username or password");
+      ErrorToast("Incorrect username or password");
     } else {
-      setSubmissionError(
+      ErrorToast(
         error.response?.statusText ?? "Unable to communicate with server."
       );
     }
