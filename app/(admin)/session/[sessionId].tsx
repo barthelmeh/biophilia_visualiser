@@ -1,6 +1,6 @@
 import { GlobalContext } from "@/context/GlobalProvider";
 import { apiUrl } from "@/constants";
-import { View, Text, SafeAreaView, ScrollView } from "react-native";
+import { View, Text, SafeAreaView, FlatList } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
 import React from "react";
 import NotFound from "@/components/NotFound";
@@ -95,74 +95,74 @@ const Session = () => {
 
   return (
     <SafeAreaView className="bg-background h-full flex-1">
-      <ScrollView>
-        <View className="w-full h-full px-4 flex-1">
-          {/* Participant Information */}
-          <View className="flex justify-center items-center mb-6">
-            <PersonalInformationCard
-              participant={participant}
-              handleNavigateBack={() => router.back()}
-            />
-          </View>
-
-          {/* Seassion Name Header */}
-          <View className="flex justify-start items-start mt-8 mb-2 w-full">
-            <Text className="font-bold font-title text-4xl leading-normal text-primary">
-              {session.name}
-            </Text>
-            <Text className="font-body text-sm text-primary -mt-2">
-              {formatDate(session.start)}
-            </Text>
-          </View>
-
-          {/* Existing timeframes */}
-          <View className="flex justify-start items-start w-full mt-6 mb-2">
-            <Text className="text-primary font-title font-bold ">
-              Existing Timeframes
-            </Text>
-            <Text className="text-primary text-small italic font-body">
-              Click on a timeframe for more options
-            </Text>
-          </View>
-
-          {/* List of existing timeframes */}
-          <View className="flex-1 w-full justify-center items-center gap-2 pb-10">
-            {session.timeframes?.map((timeframe) => (
-              <TimeframeCard
-                key={timeframe.id}
-                timeframe={timeframe}
-                onDelete={handleOpenDeleteModal}
-              />
-            ))}
-          </View>
-
-          {/* Visualise button */}
-          <View className="w-full flex justify-center items-center py-12">
-            <CustomButton
-              containerStyles="w-full"
-              title="Visualise session"
-              isLoading={false}
-            />
-          </View>
+      <View className="w-full h-full px-4 flex-1">
+        {/* Participant Information */}
+        <View className="flex justify-center items-center mb-6">
+          <PersonalInformationCard
+            participant={participant}
+            handleNavigateBack={() => router.back()}
+          />
         </View>
 
-        <Modal isOpen={isDeleteModalOpen}>
-          <DeleteModalContent
-            title={"Delete Timeframe"}
-            handleClose={() => setIsDeleteModalOpen(false)}
-            entityName={selectedTimeframe?.description ?? ""}
-            handleDelete={handleDeleteTimeframe}
-          />
-        </Modal>
+        {/* Seassion Name Header */}
+        <View className="flex justify-start items-start mt-8 mb-2 w-full">
+          <Text className="font-bold font-title text-4xl leading-normal text-primary">
+            {session.name}
+          </Text>
+          <Text className="font-body text-sm text-primary -mt-2">
+            {formatDate(session.start)}
+          </Text>
+        </View>
 
-        <Modal isOpen={isCreateTimeframeModalOpen}>
-          <CreateTimeframeModalContent
-            sessionId={session?.id ?? -1}
-            handleClose={() => setIsDeleteModalOpen(false)}
-            handleCreateTimeframe={handleCreateTimeframe}
+        {/* Existing timeframes */}
+        <View className="flex justify-start items-start w-full mt-6 mb-2">
+          <Text className="text-primary font-title font-bold ">
+            Existing Timeframes
+          </Text>
+          <Text className="text-primary text-small italic font-body">
+            Click on a timeframe for more options
+          </Text>
+        </View>
+
+        {/* List of existing timeframes */}
+
+        <FlatList
+          className="w-full flex-1" // Ensures FlatList takes remaining space
+          data={session.timeframes}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <TimeframeCard timeframe={item} onDelete={handleOpenDeleteModal} />
+          )}
+          ItemSeparatorComponent={() => <View className="h-4" />}
+          contentContainerStyle={{ paddingBottom: 80, paddingTop: 10 }}
+        />
+
+        {/* Visualise button */}
+        <View className="w-full flex justify-center items-center">
+          <CustomButton
+            containerStyles="w-full"
+            title="Visualise session"
+            isLoading={false}
           />
-        </Modal>
-      </ScrollView>
+        </View>
+      </View>
+
+      <Modal isOpen={isDeleteModalOpen}>
+        <DeleteModalContent
+          title={"Delete Timeframe"}
+          handleClose={() => setIsDeleteModalOpen(false)}
+          entityName={selectedTimeframe?.description ?? ""}
+          handleDelete={handleDeleteTimeframe}
+        />
+      </Modal>
+
+      <Modal isOpen={isCreateTimeframeModalOpen}>
+        <CreateTimeframeModalContent
+          sessionId={session?.id ?? -1}
+          handleClose={() => setIsDeleteModalOpen(false)}
+          handleCreateTimeframe={handleCreateTimeframe}
+        />
+      </Modal>
     </SafeAreaView>
   );
 };
