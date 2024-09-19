@@ -12,12 +12,11 @@ module.exports = {
       },
 
       colors: {
-        background: "#E9FFF3",
-        button: "#A8D5BA",
-        secondary_button: "#88C093",
-        text: "#374B4A",
-        secondary_text: "#5B7B6F",
-        accent: "#6FA282",
+        background: "#F2FFF8",
+        primary: "#5B7B6F",
+        onPrimary: "#FFFFFF",
+        secondaryContainer: "#E9F7EF",
+        secondary: "#E0E0E0",
         error: "#E57373",
         calm: "#A8DADC",
         moderate: "#FFD166",
