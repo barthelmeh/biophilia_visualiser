@@ -8,6 +8,8 @@ import { LogOut } from "@/services/LogInService";
 import { AxiosError } from "axios";
 import ParticipantCard from "@/components/ParticipantCard";
 import SearchBar from "@/components/SearchBar";
+import Modal from "@/components/modal/Modal";
+import DeleteModalContent from "@/components/modal/DeleteModalContent";
 
 import { apiUrl } from "@/constants";
 import { ErrorToast, SuccessToast } from "@/components/ToastComponents";
@@ -28,6 +30,10 @@ const Participants = () => {
   >([]);
   const [searchString, setSearchString] = React.useState("");
 
+  const [selectedParticipant, setSelectedParticipant] =
+    React.useState<Participant | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
+
   const handleSearch = (newValue: string) => {
     if (participants.length == 0) return;
 
@@ -37,8 +43,6 @@ const Participants = () => {
       setFilteredParticipants(participants);
       return;
     }
-
-    // Else search and filter participants
 
     const searchedParticipants = participants.filter((participant) => {
       const fullName =
@@ -58,6 +62,33 @@ const Participants = () => {
     setFilteredParticipants(searchedParticipants);
   };
 
+  const handleOpenDeleteModal = (participant: Participant) => {
+    setSelectedParticipant(participant);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleDeleteParticipant = () => {
+    const axios = getInstance(admin.token);
+
+    axios.delete(`${apiUrl}/participant/${selectedParticipant?.id}`).then(
+      (_) => {
+        const newParticipants = participants.filter(
+          (participant: Participant) =>
+            participant.id !== selectedParticipant?.id
+        );
+        setParticipants(newParticipants);
+        SuccessToast("Successfully deleted participant");
+      },
+      (_) => {
+        ErrorToast("Unable to delete participant");
+      }
+    );
+
+    setSelectedParticipant(null);
+    setIsDeleteModalOpen(false);
+    SuccessToast("Successfully deleted participant");
+  };
+
   React.useEffect(() => {
     if (!admin) return;
 
@@ -66,13 +97,16 @@ const Participants = () => {
     axios.get(`${apiUrl}/participant`).then(
       (response) => {
         setParticipants(response.data);
-        setFilteredParticipants(response.data);
       },
       (error) => {
         console.log(error);
       }
     );
   }, [admin]);
+
+  React.useEffect(() => {
+    setFilteredParticipants(participants);
+  }, [participants]);
 
   const handleLogout = () => {
     if (admin == null) {
@@ -140,10 +174,32 @@ const Participants = () => {
         <FlatList
           data={filteredParticipants}
           keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => <ParticipantCard participant={item} />}
+          renderItem={({ item }) => (
+            <ParticipantCard
+              participant={item}
+              onDelete={handleOpenDeleteModal}
+            />
+          )}
           ItemSeparatorComponent={() => <View className="h-4" />} // Gap between items
           contentContainerStyle={{ paddingBottom: 50, paddingTop: 10 }}
         />
+
+        <Modal isOpen={isDeleteModalOpen}>
+          <DeleteModalContent
+            title={"Delete Participant"}
+            handleClose={() => setIsDeleteModalOpen(false)}
+            entityName={
+              selectedParticipant
+                ? `${
+                    selectedParticipant.firstName +
+                    " " +
+                    selectedParticipant.lastName
+                  }`
+                : ""
+            }
+            handleDelete={handleDeleteParticipant}
+          />
+        </Modal>
       </View>
     </SafeAreaView>
   );
