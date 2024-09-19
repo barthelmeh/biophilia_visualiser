@@ -10,11 +10,11 @@ import React from "react";
 import { GlobalContext } from "@/context/GlobalProvider";
 import Modal from "@/components/modal/Modal";
 import DeleteModalContent from "@/components/modal/DeleteModalContent";
+import CreateSessionModalContent from "@/components/modal/CreateSessionModalContent";
 import { apiUrl } from "@/constants";
 import PersonalInformationCard from "@/components/PersonalInformationCard";
 import SessionCard from "@/components/SessionCard";
 import getInstance from "@/services/SetAxiosHeaders";
-import CustomButton from "@/components/CustomButton";
 import { ErrorToast, SuccessToast } from "@/components/ToastComponents";
 import IconButton from "@/components/IconButton";
 
@@ -40,6 +40,8 @@ const Participant = () => {
     null
   );
   const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
+  const [isCreateSessionModalOpen, setIsCreateSessionModalOpen] =
+    React.useState(false);
 
   const handleNavigateBack = () => {
     setParticipant(null);
@@ -48,7 +50,9 @@ const Participant = () => {
 
   const handleCreateSession = () => {};
 
-  const handleOpenCreateSessionModal = () => {};
+  const handleOpenCreateSessionModal = () => {
+    setIsCreateSessionModalOpen(true);
+  };
 
   const handleOpenDeleteModal = (session: Session) => {
     setSelectedSession(session);
@@ -56,15 +60,24 @@ const Participant = () => {
   };
 
   const handleDeleteSession = () => {
-    // TODO: Delete the session
+    const axios = getInstance(admin.token);
+
+    axios.delete(`${apiUrl}/session/${selectedSession?.id}`).then(
+      (_) => {
+        const newSessions = sessions.filter(
+          (session: Session) => session.id !== selectedSession?.id
+        );
+        setSessions(newSessions);
+        SuccessToast("Successfully deleted session");
+      },
+      (_) => {
+        ErrorToast("Unable to delete session");
+      }
+    );
+
     setSelectedSession(null);
     setIsDeleteModalOpen(false);
     SuccessToast("Successfully deleted session");
-
-    const newSessions = sessions.filter(
-      (session: Session) => session.id !== selectedSession?.id
-    );
-    setSessions(newSessions);
   };
 
   React.useEffect(() => {
@@ -143,6 +156,13 @@ const Participant = () => {
             handleClose={() => setIsDeleteModalOpen(false)}
             entityName={selectedSession?.name ?? ""}
             handleDelete={handleDeleteSession}
+          />
+        </Modal>
+
+        <Modal isOpen={isCreateSessionModalOpen}>
+          <CreateSessionModalContent
+            handleClose={() => setIsCreateSessionModalOpen(false)}
+            handleCreateSession={handleCreateSession}
           />
         </Modal>
       </View>
