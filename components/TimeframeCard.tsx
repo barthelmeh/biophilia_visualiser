@@ -1,12 +1,16 @@
 import { View, Text, Pressable, Image } from "react-native";
-
+import { parseISO } from "date-fns";
+import { toZonedTime, format } from "date-fns-tz";
 import { icons } from "@/constants";
 
 const formatTime = (dateString: string) => {
-  const time = new Date(dateString);
-  const hour = time.getHours().toString().padStart(2, "0");
-  const minutes = time.getMinutes().toString().padStart(2, "0");
-  return `${hour}:${minutes}`;
+  const utcDate = parseISO(dateString);
+
+  const timeZone = "Pacific/Auckland";
+
+  const zonedDate = toZonedTime(utcDate, timeZone);
+
+  return format(zonedDate, "HH:mm", { timeZone });
 };
 
 interface TimeframeCardProps {

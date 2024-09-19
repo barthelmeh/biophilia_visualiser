@@ -1,4 +1,5 @@
 import { TextInput, View, Text, Pressable } from "react-native";
+import { toZonedTime, format, fromZonedTime } from "date-fns-tz";
 import React from "react";
 
 interface TimeInputProps {
@@ -11,6 +12,7 @@ const TimeInput = (props: TimeInputProps) => {
   const [isFocused, setIsFocused] = React.useState(false);
   const [value, setValue] = React.useState("");
   const [isAM, setIsAM] = React.useState(true);
+  const timezone = "Pacific/Auckland";
 
   const handleFocus = () => setIsFocused(true);
   const handleBlur = () => setIsFocused(false);
@@ -48,10 +50,25 @@ const TimeInput = (props: TimeInputProps) => {
     } else {
       setError(" ");
 
+      if (time.length === 0) {
+        return;
+      }
+
       if (props.date) {
-        props.handleValueChange(
-          createDateTimeFromTimeString(time, isAM, new Date(props.date))
+        // Convert to NZST
+        const dateInTimezone = toZonedTime(props.date, timezone);
+
+        // Create NZST date with the given time string
+        const newDateTimeInNZ = createDateTimeFromTimeString(
+          time,
+          isAM,
+          dateInTimezone
         );
+
+        // Convert back to UTC
+        const timeInUTC = fromZonedTime(newDateTimeInNZ, timezone);
+
+        props.handleValueChange(timeInUTC.toISOString());
       } else {
         props.handleValueChange(time);
       }
@@ -63,9 +80,20 @@ const TimeInput = (props: TimeInputProps) => {
 
     if (validate(value)) {
       if (props.date) {
-        props.handleValueChange(
-          createDateTimeFromTimeString(value, newValue, new Date(props.date))
+        // Convert to NZST
+        const dateInTimezone = toZonedTime(props.date, timezone);
+
+        // Create NZST date with the given time string
+        const newDateTimeInNZ = createDateTimeFromTimeString(
+          value,
+          newValue,
+          dateInTimezone
         );
+
+        // Convert back to UTC
+        const timeInUTC = fromZonedTime(newDateTimeInNZ, timezone);
+
+        props.handleValueChange(timeInUTC.toISOString());
       } else {
         props.handleValueChange(value);
       }
@@ -138,7 +166,7 @@ const TimeInput = (props: TimeInputProps) => {
  *
  * @param timeString - Time in the form 'x:xx' or 'xx:xx'
  * @param isAM - Boolean indicating whether the time is AM or PM
- * @param startTime - Date object from which we take the date part
+ * @param startTime - Date object from which we take the date part in UTC
  * @returns A string in ISO 8601 format: YYYY-MM-DDTHH:mm:ss
  */
 function createDateTimeFromTimeString(
@@ -146,32 +174,27 @@ function createDateTimeFromTimeString(
   isAM: boolean,
   startTime: Date
 ): string {
-  // Split the timeString into hours and minutes
   const [hoursString, minutesString] = timeString.split(":");
 
-  // Parse hours and minutes as numbers
   let hours = parseInt(hoursString, 10);
   const minutes = parseInt(minutesString, 10);
 
-  // Adjust for AM/PM
   if (!isAM && hours < 12) {
-    hours += 12; // Convert PM hours (e.g., 2 PM -> 14)
+    hours += 12;
   } else if (isAM && hours === 12) {
-    hours = 0; // Convert 12 AM to 00
+    hours = 0;
   }
 
-  // Clone the date part of startTime, setting the hours and minutes
   const newDate = new Date(startTime);
 
-  // Format the date to ISO 8601 (without timezone or milliseconds)
   const year = newDate.getFullYear();
   const month = (newDate.getMonth() + 1).toString().padStart(2, "0");
   const day = newDate.getDate().toString().padStart(2, "0");
   const formattedHours = hours.toString().padStart(2, "0");
   const formattedMinutes = minutes.toString().padStart(2, "0");
-  const seconds = "00"; // Set seconds to 00 since you are not dealing with seconds in the input
+  const seconds = "00";
 
-  // Return the formatted string in ISO format: YYYY-MM-DDTHH:mm:ss
+  // Return the formatted string in ISO format: YYYY-MM-DDTHH:mm:ss+12:00
   return `${year}-${month}-${day}T${formattedHours}:${formattedMinutes}:${seconds}`;
 }
 

@@ -17,6 +17,7 @@ import CreateTimeframeModalContent from "@/components/modal/CreateTimeframeModal
 import IconButton from "@/components/IconButton";
 
 import { icons } from "@/constants";
+import { AxiosError } from "axios";
 
 const Session = () => {
   const { sessionId } = useLocalSearchParams();
@@ -60,25 +61,48 @@ const Session = () => {
   };
 
   const handleCreateTimeframe = (form: TimeframeCreate) => {
+    const axios = getInstance(admin.token);
+    axios.post(`${apiUrl}/timeframe`, form).then(
+      (_) => {
+        SuccessToast("Successfully created timeframe");
+        getSession();
+      },
+      (error: AxiosError) => {
+        if (error.response?.status === 409) {
+          ErrorToast("Cannot create a timeframe during another timeframe");
+        } else {
+          ErrorToast("Unable to create timeframe");
+        }
+      }
+    );
+
     setIsCreateTimeframeModalOpen(false);
-    SuccessToast("Successfully created timeframe");
   };
 
   const handleDeleteTimeframe = () => {
-    // TODO: Delete the timeframe
+    const axios = getInstance(admin.token);
+
+    axios.delete(`${apiUrl}/timeframe/${selectedTimeframe?.id}`).then(
+      (_) => {
+        if (session && session.timeframes) {
+          const newTimeframes = session.timeframes.filter(
+            (timeframe) => timeframe.id !== selectedTimeframe?.id
+          );
+          setSession({ ...session, timeframes: newTimeframes });
+        }
+        SuccessToast("Successfully deleted timeframe");
+      },
+      (_) => {
+        ErrorToast("Unable to delete timeframe");
+      }
+    );
+
     setSelectedTimeframe(null);
     setIsDeleteModalOpen(false);
-    SuccessToast("Successfully deleted timeframe");
-
-    if (session && session.timeframes) {
-      const newTimeframes = session.timeframes.filter(
-        (timeframe) => timeframe.id !== selectedTimeframe?.id
-      );
-      setSession({ ...session, timeframes: newTimeframes });
-    }
   };
 
-  React.useEffect(() => {
+  const getSession = () => {
+    setIsLoadingSession(true);
     const axios = getInstance(admin.token);
 
     axios.get(`${apiUrl}/session/${sessionId}`).then(
@@ -86,12 +110,16 @@ const Session = () => {
         setSession(response.data);
         setIsLoadingSession(false);
       },
-      (error) => {
+      (_) => {
         // TODO: Handle the error
         router.back();
         ErrorToast("Unable to load session");
       }
     );
+  };
+
+  React.useEffect(() => {
+    getSession();
   }, [sessionId]);
 
   if (isLoadingSession) {
