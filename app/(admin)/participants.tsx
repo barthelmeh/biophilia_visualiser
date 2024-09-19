@@ -86,7 +86,6 @@ const Participants = () => {
 
     setSelectedParticipant(null);
     setIsDeleteModalOpen(false);
-    SuccessToast("Successfully deleted participant");
   };
 
   React.useEffect(() => {
