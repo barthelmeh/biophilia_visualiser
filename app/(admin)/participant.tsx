@@ -159,7 +159,7 @@ const Participant = () => {
           />
         </Modal>
 
-        <Modal isOpen={isCreateSessionModalOpen}>
+        <Modal isOpen={isCreateSessionModalOpen} withInput>
           <CreateSessionModalContent
             handleClose={() => setIsCreateSessionModalOpen(false)}
             handleCreateSession={handleCreateSession}

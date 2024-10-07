@@ -78,6 +78,10 @@ const TimeInput = (props: TimeInputProps) => {
   const handleChangeIsAM = (newValue: boolean) => {
     setIsAM(newValue);
 
+    if (value.length === 0) {
+      return;
+    }
+
     if (validate(value)) {
       if (props.date) {
         // Convert to NZST

@@ -1,13 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { View, Text, SafeAreaView } from "react-native";
 
 import useGenerator from "@/hooks/useGenerator";
 import hrvTranslation from "@/utility/hrvTranslation";
 import { activityLevel, gender, stressLevel } from "@/constants";
+import Blob from "@/components/Blob/Blob";
 
 // For now, import data for the generator from a .json
 // Should be linked up to the database
 import hrv_data from "../../assets/hrv_data.json";
+import { Canvas } from "@react-three/fiber/";
 
 // Replace with datetime from database
 let today = new Date();
@@ -71,17 +73,11 @@ const Visualiser = () => {
           </Text>
         </View>
 
-        <View className="h-[50%] flex justify-center items-center">
-          <Text className="font-body text-xl pb-2 text-text">
-            You are feeling
-          </Text>
+        {/* Blob Rendering */}
 
-          <Text className={`font-body text-7xl pb-2 ${biophiliaColour}`}>
-            {biophiliaLevel}
-          </Text>
-
-          <Text className="font-body text-xl text-text">right now</Text>
-        </View>
+        <Canvas>
+          <Blob />
+        </Canvas>
 
         <View className="flex justify-center items-center">
           <Text className="font-body text-text">{HRVData?.time}</Text>

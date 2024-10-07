@@ -204,7 +204,7 @@ const Session = () => {
         />
       </Modal>
 
-      <Modal isOpen={isCreateTimeframeModalOpen}>
+      <Modal isOpen={isCreateTimeframeModalOpen} withInput>
         <CreateTimeframeModalContent
           session={session}
           handleClose={() => setIsCreateTimeframeModalOpen(false)}
