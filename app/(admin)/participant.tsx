@@ -19,6 +19,7 @@ import { ErrorToast, SuccessToast } from "@/components/ToastComponents";
 import IconButton from "@/components/IconButton";
 
 import { icons } from "@/constants";
+import UploadSession from "@/services/UploadSessionService";
 
 const Participant = () => {
   const { admin, participant, setParticipant } =
@@ -48,7 +49,24 @@ const Participant = () => {
     router.back();
   };
 
-  const handleCreateSession = () => {};
+  const handleCreateSession = (form: SessionCreate, jsonContent: string) => {
+    UploadSession(form, jsonContent, admin, participant).then(
+      (_) => {
+        SuccessToast("Successfully created session");
+        getParticipant();
+      },
+      (error) => {
+        if (error == "Incorrect Format") {
+          ErrorToast("Supplied file is in the incorrect format");
+        } else {
+          console.log(error);
+          ErrorToast("Unable to create session");
+        }
+      }
+    );
+
+    setIsCreateSessionModalOpen(false);
+  };
 
   const handleOpenCreateSessionModal = () => {
     setIsCreateSessionModalOpen(true);
@@ -77,18 +95,14 @@ const Participant = () => {
 
     setSelectedSession(null);
     setIsDeleteModalOpen(false);
-    SuccessToast("Successfully deleted session");
   };
 
-  React.useEffect(() => {
-    if (!participant) return;
-
+  const getParticipant = () => {
     const axios = getInstance(admin.token);
 
     axios.get(`${apiUrl}/session`).then(
       (response) => {
         setIsLoadingSessions(false);
-        // TODO: Filter sessions so that its just your sessions that show
         const allSessions = response.data;
         const personalSessions = allSessions.filter(
           (session: Session) => session.participantId == participant.id
@@ -100,6 +114,11 @@ const Participant = () => {
         ErrorToast("Error loading sessions");
       }
     );
+  };
+
+  React.useEffect(() => {
+    if (!participant) return;
+    getParticipant();
   }, [participant]);
 
   return (
@@ -161,6 +180,7 @@ const Participant = () => {
 
         <Modal isOpen={isCreateSessionModalOpen} withInput>
           <CreateSessionModalContent
+            participant={participant}
             handleClose={() => setIsCreateSessionModalOpen(false)}
             handleCreateSession={handleCreateSession}
           />

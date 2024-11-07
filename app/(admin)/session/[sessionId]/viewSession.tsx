@@ -111,11 +111,14 @@ const Session = () => {
         setIsLoadingSession(false);
       },
       (_) => {
-        // TODO: Handle the error
         router.back();
         ErrorToast("Unable to load session");
       }
     );
+  };
+
+  const handleVisualise = () => {
+    router.push(`/session/${sessionId}/visualise`);
   };
 
   React.useEffect(() => {
@@ -188,6 +191,7 @@ const Session = () => {
         {/* Visualise button */}
         <View className="w-full flex justify-center items-center">
           <CustomButton
+            handlePress={handleVisualise}
             containerStyles="w-full"
             title="Visualise session"
             isLoading={false}

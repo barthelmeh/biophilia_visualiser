@@ -20,7 +20,7 @@ const SessionCard = (props: SessionCardProps) => {
   return (
     <Pressable
       className={`bg-secondaryContainer rounded-3xl relative w-full p-4 flex-row justify-between items-center`}
-      onPress={() => router.push(`/session/${props.session.id}`)}
+      onPress={() => router.push(`/session/${props.session.id}/viewSession`)}
     >
       {/* Delete button */}
       <View className="absolute top-1/2 right-0 pe-5">

@@ -3,10 +3,14 @@ import vertexShader from "./vertexShader";
 import fragmentShader from "./fragmentShader";
 import { useFrame } from "@react-three/fiber/native";
 import { MathUtils, Mesh, IcosahedronGeometry } from "three";
+import { stressLevel } from "@/constants";
 
-const Blob = () => {
+interface BlobProps {
+  stressLevel: stressLevel;
+}
+
+const Blob = (props: BlobProps) => {
   const mesh = useRef<Mesh | null>(null);
-  const hover = useRef(false);
   const uniforms = useMemo(() => {
     return {
       u_time: { value: 0 },
@@ -20,22 +24,23 @@ const Blob = () => {
       mesh.current.material.uniforms.u_time.value =
         0.4 * clock.getElapsedTime();
 
+      const intensity_mult =
+        props.stressLevel === stressLevel.CALM
+          ? 0.05
+          : props.stressLevel === stressLevel.MODERATE
+          ? 0.5
+          : 1.0;
+
       mesh.current.material.uniforms.u_intensity.value = MathUtils.lerp(
         mesh.current.material.uniforms.u_intensity.value,
-        hover.current ? 1.0 : 0.05,
+        intensity_mult,
         0.02
       );
     }
   });
 
   return (
-    <mesh
-      ref={mesh}
-      scale={2}
-      position={[0, 0, -2]}
-      onPointerOver={() => (hover.current = true)}
-      onPointerOut={() => (hover.current = false)}
-    >
+    <mesh ref={mesh} scale={2} position={[0, 0, -4]}>
       <icosahedronGeometry args={[1, 5]} />
       <shaderMaterial
         vertexShader={vertexShader}

@@ -16,19 +16,19 @@ const AdminLayout = () => {
         }}
       />
       <Stack.Screen
-        name="visualiser"
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
         name="participant"
         options={{
           headerShown: false,
         }}
       />
       <Stack.Screen
-        name="session/[sessionId]"
+        name="session/[sessionId]/viewSession"
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="session/[sessionId]/visualise"
         options={{
           headerShown: false,
         }}
